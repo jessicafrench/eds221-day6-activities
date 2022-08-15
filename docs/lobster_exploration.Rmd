@@ -1,0 +1,25 @@
+---
+title: "lobster_exploration"
+author: "Jessica French"
+date: "2022-08-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(here)
+library(janitor)
+```
+
+# Import data set
+```{r}
+lobster_abundance <- read_csv(here("data", "Lobster_Abundance_All_Years_20210412.csv"), 
+                              na = "-99999") |> 
+  clean_names() |> 
+  uncount(count) #creates a separate observation (row) for each lobster seen rather than having them batched. 
+```
+
