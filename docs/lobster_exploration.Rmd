@@ -23,3 +23,78 @@ lobster_abundance <- read_csv(here("data", "Lobster_Abundance_All_Years_20210412
   uncount(count) #creates a separate observation (row) for each lobster seen rather than having them batched. 
 ```
 
+Proportion of lobster sizes
+```{r}
+site_year_counts <- lobster_abundance |> 
+  group_by(year, site) |> 
+  summarize(mean_carapace_length = mean(size_mm),
+            total = n())
+```
+
+```{r}
+lobster_total_plot <- ggplot(data = site_year_counts,
+                             aes(x = year,
+                                 y = total)) +
+  geom_line(aes(color = site))
+
+lobster_total_plot
+```
+
+```{r}
+lobster_2020 <- lobster_abundance |> 
+  filter( year == 2020) |> 
+  mutate(legal = ifelse(size_mm >= 79.76, "yes", "no")) 
+
+lobster_2020_legal <- lobster_2020 |> 
+  group_by(site, legal) |> 
+  summarize(number = n()) 
+
+
+legal_lob_plot <- ggplot(data = lobster_2020_legal,
+                         aes(x = site,  
+                             y = number)) +
+  geom_col(position = "fill", 
+           aes(fill = legal)) +
+  scale_fill_manual(values = c("coral2", "darkslategray4")) +
+  theme_classic()
+  
+
+legal_lob_plot
+```
+
+```{r}
+ex_a <- lobster_abundance |> 
+  filter(!site %in% c("AQUE", "MOHK"))
+
+ex_b <- lobster_abundance |> 
+  filter(month == 8)
+
+ex_c <- lobster_abundance |> 
+  filter(site == "AQUE" | size_mm > 70)
+
+ex_d <- lobster_abundance |> 
+  filter(site != "NAPL")
+```
+
+```{r}
+ex_e <- lobster_abundance |> 
+  group_by(site) |> 
+  summarize(mean_carapace = mean(size_mm, na.rm = TRUE), mean_carapace_sd = sd(size_mm, na.rm = TRUE))
+
+ex_f <- lobster_abundance |> 
+  group_by(site, month) |> 
+  summarize(max_carapace_len = max(size_mm))
+```
+
+```{r}
+ex_g <- lobster_abundance |> 
+  mutate(size_cm = size_mm / 100)
+
+ex_h <- lobster_abundance |> 
+  mutate(site = tolower(site))
+
+ex_i <- lobster_abundance |> 
+  mutate(area = as.character(area))
+  
+```
+
